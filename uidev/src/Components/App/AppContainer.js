@@ -25,7 +25,9 @@ class AppContainer extends Component {
   componentDidMount = () => {
     const { sharedPort } = this.props;
     this._registerOnMaster(sharedPort);
+    this._getBalance(sharedPort);
     this._getAddress(sharedPort);
+    setInterval(() => this._getBalance(sharedPort), 1000);
   };
   render() {
     baseStyles();
@@ -39,7 +41,14 @@ class AppContainer extends Component {
   _getAddress = async port => {
     const request = await axios.get(`${SELF_NODE(port)}/me/address`);
     this.setState({
-      address: request.data
+      address: request.data,
+      isLoading: false
+    });
+  };
+  _getBalance = async port => {
+    const request = await axios.get(`${SELF_NODE(port)}/me/balance`);
+    this.setState({
+      balance: request.data
     });
   };
 }
