@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "concurrently": "^3.5.1",
+    "electron": "^1.8.3"
+  }
+}
