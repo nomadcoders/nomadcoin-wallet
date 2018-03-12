@@ -17,7 +17,8 @@ const baseStyles = () => injectGlobal`
 
 class AppContainer extends Component {
   state = {
-    isLoading: true
+    isLoading: true,
+    isMining: false
   };
   static propTypes = {
     sharedPort: PropTypes.number.isRequired
@@ -31,7 +32,7 @@ class AppContainer extends Component {
   };
   render() {
     baseStyles();
-    return <AppPresenter {...this.state} />;
+    return <AppPresenter {...this.state} mineBlock={this._mineBlock} />;
   }
   _registerOnMaster = async port => {
     const request = await axios.post(`${MASTER_NODE}/peers`, {
@@ -47,8 +48,19 @@ class AppContainer extends Component {
   };
   _getBalance = async port => {
     const request = await axios.get(`${SELF_NODE(port)}/me/balance`);
+    const { balance } = request.data;
     this.setState({
-      balance: request.data
+      balance
+    });
+  };
+  _mineBlock = async () => {
+    const { sharedPort } = this.props;
+    this.setState({
+      isMining: true
+    });
+    const request = await axios.post(`${SELF_NODE(sharedPort)}/blocks`);
+    this.setState({
+      isMining: false
     });
   };
 }
