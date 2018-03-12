@@ -6,10 +6,12 @@ const { app, BrowserWindow } = electron;
 
 let mainWindow;
 
-function createWindow() {
+const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 800,
-    height: 600
+    height: 600,
+    resizable: false,
+    title: "Nomadcoin Wallet"
   });
 
   mainWindow.loadURL(
@@ -19,6 +21,22 @@ function createWindow() {
       slashes: true
     })
   );
-}
+
+  mainWindow.on("closed", () => {
+    mainWindow = null;
+  });
+};
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
+
+app.on("activate", () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
 
 app.on("ready", createWindow);
