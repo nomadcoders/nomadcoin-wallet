@@ -26,12 +26,46 @@ const AppContainer = styled.div`
   flex-direction: column;
 `;
 
+const SendTxForm = styled.form`
+  margin-top: 25px;
+`;
+
+const Submit = Button.withComponent("input").extend`
+  margin-right:10px;
+  border: 2px solid #305371;
+  box-shadow:none;
+  &:hover{
+      box-shadow:none;
+      transform:none;
+  }
+  &:disabled{
+      color:#999;
+      border: 2px solid #999;
+      cursor:not-allowed;
+      box-shadow:none;
+  }
+`;
+
+const Input = Submit.extend`
+  width: 200px;
+  padding-left: 10px;
+  &:active {
+    background-color: transparent;
+  }
+  color: ${props => (props.hasError ? "#e74c3c" : "inherit")};
+  border-color: ${props => (props.hasError ? "#e74c3c" : "inherit")};
+`;
+
 const AppPresenter = ({
   isLoading,
   address = "",
   balance = "",
   mineBlock,
-  isMining
+  isMining,
+  toAddress = "",
+  amount = 0,
+  handleInput,
+  handleSubmit
 }) => (
   <AppContainer>
     <Header>
@@ -48,6 +82,34 @@ const AppPresenter = ({
         <KeyName>Your balance:</KeyName> {balance} NMD
       </Key>
     </Card>
+    <Card>
+      <Key>Send NMD: </Key>
+      <SendTxForm onSubmit={handleSubmit}>
+        <Input
+          placeholder={"Address"}
+          required
+          name="toAddress"
+          value={toAddress}
+          type={"text"}
+          onChange={handleInput}
+        />
+        <Input
+          placeholder={"Amount"}
+          required
+          name="amount"
+          type={"number"}
+          value={amount || ""}
+          onChange={handleInput}
+          max={balance}
+        />
+        <Submit
+          value={"Send"}
+          type={"submit"}
+          readOnly
+          disabled={!toAddress || !amount}
+        />
+      </SendTxForm>
+    </Card>
   </AppContainer>
 );
 
@@ -56,7 +118,11 @@ AppPresenter.propTypes = {
   address: PropTypes.string,
   balance: PropTypes.number,
   mineBlock: PropTypes.func.isRequired,
-  isMining: PropTypes.bool.isRequired
+  isMining: PropTypes.bool.isRequired,
+  toAddress: PropTypes.string.isRequired,
+  amount: PropTypes.number.isRequired,
+  handleInput: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired
 };
 
 export default AppPresenter;
