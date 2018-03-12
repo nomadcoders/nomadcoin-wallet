@@ -20,7 +20,7 @@ class AppContainer extends Component {
     isLoading: true,
     isMining: false,
     toAddress: "",
-    amount: 0
+    amount: "0"
   };
   static propTypes = {
     sharedPort: PropTypes.number.isRequired
@@ -83,7 +83,7 @@ class AppContainer extends Component {
     const { sharedPort } = this.props;
     const { amount, toAddress } = this.state;
     const request = await axios.post(`${SELF_NODE(sharedPort)}/transactions`, {
-      amount,
+      amount: Number(amount),
       address: toAddress
     });
     this.setState({
