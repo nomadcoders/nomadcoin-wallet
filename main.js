@@ -14,13 +14,19 @@ const createWindow = () => {
     title: "Nomadcoin Wallet"
   });
 
-  mainWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, "index.html"),
-      protocol: "file",
-      slashes: true
-    })
-  );
+  const ENV = process.env.ENV;
+
+  if (ENV === "dev") {
+    mainWindow.loadURL("http://localhost:3000");
+  } else {
+    mainWindow.loadURL(
+      url.format({
+        pathname: path.join(__dirname, "uidev/build/index.html"),
+        protocol: "file",
+        slashes: true
+      })
+    );
+  }
 
   mainWindow.on("closed", () => {
     mainWindow = null;
